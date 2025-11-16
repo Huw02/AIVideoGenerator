@@ -1,4 +1,3 @@
-//import {generateVideo} from "./veo.js";
 import { postObjectAsJson } from './modulejson.js';
 import {createUser, login} from "./user.js";
 

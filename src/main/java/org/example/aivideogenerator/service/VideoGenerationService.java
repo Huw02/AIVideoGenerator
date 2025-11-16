@@ -321,4 +321,8 @@ public class VideoGenerationService {
             throw new RuntimeException("Error downloading video: " + e.getMessage(), e);
         }
     }
+
+    public Video findByVideoId(String videoId){
+        return videoRepository.findByVideoId(videoId);
+    }
 }

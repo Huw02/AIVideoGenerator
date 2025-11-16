@@ -46,7 +46,7 @@ public class ProjectSecurityConfigAdvanced {
                 .addFilterBefore(new JWTTokenValidatorFilter(), BasicAuthenticationFilter.class)
                 .authorizeHttpRequests((requests)->requests
                         .requestMatchers("/api/v1/admin/**").hasRole("ADMIN") //alle endpoints med admin skal have role admin
-                        .requestMatchers("/api/v1/users/register", "/api/v1/users/login", "/api/v1/videos/**").permitAll() //man kan tilgå users og login når man ikke er logget ind, da man skal kunne lav en ny profil
+                        .requestMatchers("/api/v1/users/register", "/api/v1/users/login", "/api/v1/videos/stream/**").permitAll() //man kan tilgå users og login når man ikke er logget ind, da man skal kunne lav en ny profil
                         .anyRequest().authenticated()) // alle andre endpoints kan kun tilgås når man er logget ind
                 .formLogin(Customizer.withDefaults())
                 .httpBasic(Customizer.withDefaults());

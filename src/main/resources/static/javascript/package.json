@@ -1,9 +1,0 @@
-{
-  "name": "veo-js-client",
-  "version": "1.0.0",
-  "type": "module",
-  "dependencies": {
-    "@google/genai": "^1.0.0",
-    "jwt-decode": "^4.0.0"
-  }
-}

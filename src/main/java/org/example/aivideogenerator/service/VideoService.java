@@ -39,6 +39,12 @@ public class VideoService {
     public void deleteVideo(int id){
         videoRepository.deleteById(id);
     }
+    public Video findByVideoId(String videoId){
+        return videoRepository.findByVideoId(videoId);
+    }
+    public Video findById(Long id){
+        return videoRepository.findById(id);
+    }
 
 
 }
