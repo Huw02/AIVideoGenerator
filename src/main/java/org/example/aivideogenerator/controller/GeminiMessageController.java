@@ -4,65 +4,88 @@ import org.example.aivideogenerator.DTO.GeminiMessageDTO;
 import org.example.aivideogenerator.model.GeminiMessage;
 import org.example.aivideogenerator.service.GeminiMessageService;
 
+import org.example.aivideogenerator.service.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1")
+@CrossOrigin(origins = "*")
 public class GeminiMessageController {
 
     @Autowired
     private GeminiMessageService geminiMessageService;
 
-    @GetMapping("/gemini/askPrompt")
+    @Autowired
+    private ProjectService projectService;
+
+
+    //følgende endpoint sender en prompt til gemini, og gemmer prompt, gemini response og projectId i db;
+    @GetMapping("/gemini/askPrompt/postman")
     public String sendPromtToGemini(@RequestBody GeminiMessageDTO geminiMessageDTO){
+        System.out.println(geminiMessageDTO.toString());
         String geminiResponse = geminiMessageService.explainAI(geminiMessageDTO.prompt());
 
         GeminiMessage geminiMessage = new GeminiMessage();
         geminiMessage.setPrompt(geminiMessageDTO.prompt());
         geminiMessage.setJsonResponse(geminiResponse);
+        geminiMessage.setProject(projectService.getProjectByProjectId(geminiMessageDTO.projectId()));
 
         geminiMessageService.addGeminiMessage(geminiMessage);
-
 
         return geminiResponse;
     }
 
+    //følgende metode henter en gemini request fra backend, sender til gemini og opdatere så den i DB ved at sætte response på
+    @GetMapping("/gemini/askPrompt/{geminiId}")
+    public ResponseEntity<GeminiMessage> sendPromtToGeminiFromBackend(@PathVariable int geminiId){
 
-    //bruges ikke
-    @GetMapping("/gemini/sendPrompt")
-    public ResponseEntity<String> generateVeo3Json(@RequestBody GeminiMessageDTO geminiMessageDTO) {
-        System.out.println(geminiMessageDTO.prompt());
-        if(geminiMessageDTO.prompt() != null) {
-            String json = geminiMessageService.generateVeo3Json(geminiMessageDTO);
+        GeminiMessage geminiMessage = geminiMessageService.getGeminiMessageByGeminiId(geminiId);
+        System.out.println("Henter gemini msg fra db: " + geminiMessage.toString());
 
-            GeminiMessage geminiMessage = new GeminiMessage();
-            geminiMessage.setPrompt(geminiMessageDTO.prompt());
-            geminiMessage.setJsonResponse(json);
+        String geminiResponse = geminiMessageService.explainAI(geminiMessage.getPrompt());
+        System.out.println("gemini response: " + geminiResponse);
 
-            geminiMessageService.addGeminiMessage(geminiMessage);
+        geminiMessage.setJsonResponse(geminiResponse);
 
-            return ResponseEntity.ok(json);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("The dto promt was empty");
-        }
+        geminiMessageService.addGeminiMessage(geminiMessage);
+        System.out.println("opdateret gemini msg : " + geminiMessage);
+
+
+        return new ResponseEntity<>(geminiMessageService.addGeminiMessage(geminiMessage), HttpStatus.OK);
     }
 
+
+
+
+    @PostMapping("/gemini/makePrompt")
+    public ResponseEntity<GeminiMessage>createGeminiPrompt(@RequestBody GeminiMessageDTO geminiMessageDTO){
+
+        GeminiMessage geminiMessage = new GeminiMessage();
+        geminiMessage.setProject(projectService.getProjectByProjectId(geminiMessageDTO.projectId()));
+        geminiMessage.setPrompt(geminiMessageDTO.prompt());
+
+        return new ResponseEntity<>(geminiMessageService.addGeminiMessage(geminiMessage), HttpStatus.CREATED);
+    }
+
+
+    //metode bruges ikke endnu
+    /*
     @GetMapping("/gemini/{geminiId}")
     public ResponseEntity<GeminiMessage>getGeminiById(@PathVariable int geminiId){
         return new ResponseEntity<>(geminiMessageService.getGeminiMessageByGeminiId(geminiId), HttpStatus.OK);
     }
+    */
 
-    @PostMapping("/gemini")
-    public ResponseEntity<GeminiMessage>addGemini(@RequestBody GeminiMessageDTO geminiMessageDTO){
-        GeminiMessage geminiMessage = new GeminiMessage();
 
-        geminiMessage.setPrompt(geminiMessageDTO.prompt());
-        //geminiMessage.setJsonResponse(geminiMessageDTO.jsonResponse());
 
-        return new ResponseEntity<>(geminiMessageService.addGeminiMessage(geminiMessage), HttpStatus.CREATED);
+    @GetMapping("/gemini/{projectId}")
+    public ResponseEntity<List<GeminiMessage>>getGeminiPromptsByProjectId(@PathVariable int projectId){
+        return new ResponseEntity<>(geminiMessageService.findByProjectId(projectId), HttpStatus.OK);
     }
 
 

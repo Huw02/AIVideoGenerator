@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface VideoRepository extends JpaRepository<Video, Integer> {
     List<Video>findByProjectId(int projectId);
+    Video findByVideoId(String videoId);
 }

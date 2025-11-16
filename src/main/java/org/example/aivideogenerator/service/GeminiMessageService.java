@@ -17,6 +17,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.http.*;
 import org.json.JSONObject;
 
+import java.util.List;
 import java.util.Scanner;
 
 @Service
@@ -25,14 +26,6 @@ public class GeminiMessageService {
     @Autowired
     GeminiMessageRepository geminiMessageRepository;
 
-
-    @Value("${gemini.api.key}")
-    private String geminiApiKey;
-
-    @Value("${gemini.api.url:https://generativelanguage.googleapis.com/v1beta3/models/gemini-2.5-pro:generateMessage}")
-    private String geminiApiUrl;
-
-    private final ObjectMapper mapper = new ObjectMapper();
 
     private static final String SYSTEM_PROMPT = """
         You are an assistant that helps creators turn natural language video ideas into structured JSON prompts for Google Veo 3. You always follow a consistent format.
@@ -68,71 +61,6 @@ public class GeminiMessageService {
         Everything after this line is the prompt for Veo3 JSON.
         """;
 
-    //bruges ikke lige nu
-    public String generateVeo3Json(GeminiMessageDTO dto) {
-        try {
-            RestTemplate restTemplate = new RestTemplate();
-
-            // Combine system prompt + user prompt
-            String fullPrompt = SYSTEM_PROMPT + "\n\n" + dto.prompt();
-
-            // Build JSON body
-            ObjectNode textNode = mapper.createObjectNode();
-            textNode.put("type", "text");
-            textNode.put("text", fullPrompt);
-
-            ArrayNode contentArray = mapper.createArrayNode();
-            contentArray.add(textNode);
-
-            ObjectNode messageNode = mapper.createObjectNode();
-            messageNode.put("role", "user");
-            messageNode.set("content", contentArray);
-
-            ArrayNode messagesArray = mapper.createArrayNode();
-            messagesArray.add(messageNode);
-
-            ObjectNode requestBody = mapper.createObjectNode();
-            requestBody.set("messages", messagesArray);
-
-            // Set headers
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-            headers.setBearerAuth(geminiApiKey);
-
-            HttpEntity<String> entity = new HttpEntity<>(mapper.writeValueAsString(requestBody), headers);
-
-            // Call Gemini API
-            ResponseEntity<String> response = restTemplate.exchange(
-                    geminiApiUrl,
-                    HttpMethod.GET,
-                    entity,
-                    String.class
-            );
-
-            return extractJsonFromText(response.getBody());
-
-        } catch (Exception e) {
-            throw new RuntimeException("Error calling Gemini API: " + e.getMessage(), e);
-        }
-    }
-
-
-    //bruges ikke lige nu
-    // Extract JSON from Gemini response text
-    private String extractJsonFromText(String responseText) {
-        try {
-            JsonNode root = mapper.readTree(responseText);
-            JsonNode textNode = root.path("candidates").get(0).path("content").path("text");
-            String jsonString = textNode.asText();
-
-            // Optional: validate JSON
-            JsonNode parsed = mapper.readTree(jsonString);
-            return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(parsed);
-
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to parse Gemini JSON output: " + e.getMessage(), e);
-        }
-    }
 
 
     //BRUGES NU
@@ -163,6 +91,10 @@ public class GeminiMessageService {
 
     public GeminiMessage getGeminiMessageByGeminiId(int geminiId){
         return geminiMessageRepository.findById(geminiId).orElseThrow(() -> new RuntimeException("could not find gemini message"));
+    }
+
+    public List<GeminiMessage>findByProjectId(int id){
+        return geminiMessageRepository.findByProject_id(id);
     }
 
 

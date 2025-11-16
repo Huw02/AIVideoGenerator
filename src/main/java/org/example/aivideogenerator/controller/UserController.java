@@ -1,11 +1,19 @@
 package org.example.aivideogenerator.controller;
 
+import org.example.aivideogenerator.DTO.AuthRequest;
 import org.example.aivideogenerator.DTO.UserDTO;
+import org.example.aivideogenerator.securityconfig.JwtService;
 import org.example.aivideogenerator.model.User;
 import org.example.aivideogenerator.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,19 +25,113 @@ public class UserController {
 
     @Autowired
     UserService userService;
+    @Autowired
+    private AuthenticationManager authenticationManager;
+    @Autowired
+    PasswordEncoder passwordEncoder;
+    @Autowired
+    private JwtService jwtService;
 
-    @GetMapping("/users")
+
+    @GetMapping("/admin/users")
     public ResponseEntity<List<User>> getAllUsers(){
         return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
     }
 
+    /*
     @GetMapping("/users/{userId}")
-    public ResponseEntity<User> getUserByUserId(@PathVariable int userId){
+    public ResponseEntity<User> getUserByUserIdOldVersion(@PathVariable int userId){
         return new ResponseEntity<>(userService.getUser(userId), HttpStatus.OK);
+    }*/
+
+    //følgende metode gør så man kun kan få ens egen profil
+    @GetMapping("/users/{userId}")
+    public ResponseEntity<User> getUserByAuthUserId(@PathVariable int userId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        User loggedInUser = userService.getUserByUsername(username);
+
+        if (loggedInUser.getId() != userId) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN); // 403 Forbidden
+        }
+
+        return new ResponseEntity<>(loggedInUser, HttpStatus.OK);
     }
 
 
-    @PostMapping("/users")
+    //følgende metode bruges ikke
+    /*
+    @PostMapping("/users/login")
+    public ResponseEntity<String> doLogin(@RequestBody AuthRequest request) {
+        System.out.println("1");
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(request.username(), request.password()));
+        System.out.println("2");
+        if (authentication.isAuthenticated()) {
+            System.out.println("3");
+            //return JwtResponseDTO.builder() //
+            // .accessToken(jwtService.GenerateToken(authRequestDTO.getUsername()).build();
+            String token = jwtService.generateToken(authentication.getName());
+            return ResponseEntity.ok()
+                    .header("Authorization", "Bearer " + token)
+                    .body("Du er logged in");
+        }
+        else {
+            System.out.println("kunne ikke logge ind");
+            throw new UsernameNotFoundException("invalid user request..!!");
+        }
+    } */
+
+    @PostMapping("/users/login")
+    public ResponseEntity<String> doLogintest(@RequestBody AuthRequest customer) {
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(customer.username(), customer.password()));
+        if(authentication.isAuthenticated()){
+            //return JwtResponseDTO.builder()
+            //        .accessToken(jwtService.GenerateToken(authRequestDTO.getUsername()).build();
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body("Du er logget på");
+        } else {
+            throw new UsernameNotFoundException("invalid user request..!!");
+        }
+    }
+
+
+
+    @PostMapping("/users/register")
+    public ResponseEntity<String> registerUser(@RequestBody UserDTO newUser) {
+        User isUsernameFree = userService.getUserByUsername(newUser.username()); //checker om username er free
+        if(isUsernameFree != null){
+            return new ResponseEntity<>(HttpStatus.CONFLICT); //hvis den ikke er fri sender den 409, som bliver fanget i frontend
+        }
+
+        User user = new User();
+        User savedUser;
+        ResponseEntity response = null;
+        try {
+            String hashPwd = passwordEncoder.encode(newUser.password());
+            user.setName(newUser.name());
+            user.setUsername(newUser.username());
+            user.setPassword(hashPwd);
+            user.setRole("ROLE_USER");
+
+
+            savedUser = userService.addUser(user);
+            if (savedUser.getId() > 0) {
+                response = ResponseEntity.status(HttpStatus.CREATED)
+                        .body("Given user details are successfully registrered");
+            }
+        } catch (Exception ex) {
+            response = ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("An exception occured due to" + ex.getMessage());
+        }
+        return response;
+    }
+
+
+    //bruges ikke
+    @PostMapping("/admin/users")
     public ResponseEntity<User>addUser(@RequestBody UserDTO userDTO){
         User user = new User();
         user.setName(userDTO.name());

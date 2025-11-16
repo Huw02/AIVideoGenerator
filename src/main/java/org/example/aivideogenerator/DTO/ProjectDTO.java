@@ -1,4 +1,4 @@
 package org.example.aivideogenerator.DTO;
 
-public record ProjectDTO(String name, String description, int userId) {
+public record ProjectDTO(int userId, String projectName, String projectDescription) {
 }

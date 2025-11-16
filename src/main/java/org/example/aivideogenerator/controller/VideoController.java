@@ -14,6 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1")
+@CrossOrigin(origins = "*")
 public class VideoController {
 
 
@@ -25,7 +26,7 @@ public class VideoController {
 
     @Autowired
     GeminiMessageService geminiMessageService;
-
+    /*
     @GetMapping("/videos/{projectId}")
     public ResponseEntity<List<Video>>getVideosByProjectId(@PathVariable int projectId){
         return new ResponseEntity<>(videoService.getVideosByProjectId(projectId), HttpStatus.OK);
@@ -69,5 +70,7 @@ public class VideoController {
             return ResponseEntity.notFound().build();
         }
     }
+
+     */
 
 }

@@ -24,6 +24,9 @@ public class Project {
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Video>videos;
 
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<GeminiMessage>geminiMessages;
+
     public Project(int id, String projectName, String projectDescription) {
         this.id = id;
         this.projectName = projectName;
@@ -71,5 +74,13 @@ public class Project {
 
     public void setVideos(List<Video> videos) {
         this.videos = videos;
+    }
+
+    public List<GeminiMessage> getGeminiMessages() {
+        return geminiMessages;
+    }
+
+    public void setGeminiMessages(List<GeminiMessage> geminiMessages) {
+        this.geminiMessages = geminiMessages;
     }
 }

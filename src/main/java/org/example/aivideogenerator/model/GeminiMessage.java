@@ -1,5 +1,6 @@
 package org.example.aivideogenerator.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 @Entity
@@ -20,6 +21,11 @@ public class GeminiMessage {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "video_id")
     private Video video;
+
+    @ManyToOne
+    @JoinColumn(name = "project_id")
+    @JsonBackReference
+    private Project project;
 
     public GeminiMessage(int id, String jsonResponse, String prompt) {
         this.id = id;
@@ -66,5 +72,13 @@ public class GeminiMessage {
 
     public void setVideo(Video video) {
         this.video = video;
+    }
+
+    public Project getProject() {
+        return project;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
     }
 }

@@ -1,17 +1,30 @@
 package org.example.aivideogenerator.model;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "videos")
 public class Video {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
-    private String videoTitle;
+    @Column(nullable = false, unique = true)
+    private String videoId;
 
-    private String videoLink;
+    @Column(nullable = false, length = 1000)
+    private String prompt;
+
+    @Column(nullable = false)
+    private String status;
+
+    @Column(length = 500)
+    private String filePath;
+
+    @Column(nullable = false)
+    private LocalDateTime createdAt;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "gemini_id")
@@ -21,42 +34,6 @@ public class Video {
     @JoinColumn(name ="project_id")
     @JsonBackReference
     private Project project;
-
-
-
-    public Video(int id, String videoTitle, String videoLink, GeminiMessage geminiMessage) {
-        this.id = id;
-        this.videoTitle = videoTitle;
-        this.videoLink = videoLink;
-        this.geminiMessage = geminiMessage;
-    }
-    public Video(){
-
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int videoId) {
-        this.id = videoId;
-    }
-
-    public String getVideoTitle() {
-        return videoTitle;
-    }
-
-    public void setVideoTitle(String videoTitle) {
-        this.videoTitle = videoTitle;
-    }
-
-    public String getVideoLink() {
-        return videoLink;
-    }
-
-    public void setVideoLink(String videoLink) {
-        this.videoLink = videoLink;
-    }
 
     public GeminiMessage getGeminiMessage() {
         return geminiMessage;
@@ -72,5 +49,54 @@ public class Video {
 
     public void setProject(Project project) {
         this.project = project;
+    }
+
+    // Getters and Setters
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getVideoId() {
+        return videoId;
+    }
+
+    public void setVideoId(String videoId) {
+        this.videoId = videoId;
+    }
+
+    public String getPrompt() {
+        return prompt;
+    }
+
+    public void setPrompt(String prompt) {
+        this.prompt = prompt;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getFilePath() {
+        return filePath;
+    }
+
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 }
