@@ -96,6 +96,9 @@ public class GeminiMessageService {
     public List<GeminiMessage>findByProjectId(int id){
         return geminiMessageRepository.findByProject_id(id);
     }
+    public void deleteGeminiMessage(int geminiId){
+        geminiMessageRepository.deleteById(geminiId);
+    }
 
 
 

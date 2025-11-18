@@ -122,7 +122,7 @@ async function openProject(proj){
 
         const response = await sendPromptToGemini(userPrompt, proj.id);
         if(!response){
-            console.log("No response: " + response);
+            console.log("No response: ");
             return;
         }
         responseBox.textContent = response.toString();
@@ -169,9 +169,8 @@ async function openProject(proj){
         oldPromptReceived.textContent = singlePrompt.jsonResponse;
         oldPromptReceived.readOnly = true;
 
-        // ADD VIDEO GENERATION BUTTON
 
-        //knappen bliver enten til en generate video eller
+        //knappen bliver enten til en generate video eller en watch video knap
         let genOrWatchVidBtn;
         if(singlePrompt.video === null || singlePrompt.video === undefined) {
             // No video exists - show generate button
@@ -191,9 +190,17 @@ async function openProject(proj){
             });
         }
 
+        const deletePrompt = document.createElement("button");
+        deletePrompt.textContent = "Delete Prompt";
+        deletePrompt.className = "delete-btn";
+        deletePrompt.addEventListener("click", () => {
+            deletePromptFromDb(singlePrompt);
+        })
+
         oldPromptBox.appendChild(oldPromptSend);
         oldPromptBox.appendChild(oldPromptReceived);
         oldPromptBox.appendChild(genOrWatchVidBtn);
+        oldPromptBox.appendChild(deletePrompt);
         oldPromptsContainer.appendChild(oldPromptBox);
     })
 
@@ -216,6 +223,7 @@ async function sendPromptToGemini(prompt, projectId){
         if(savedPrompt && savedPrompt.id){
 
             const geminiResponse = await fetchAnyUrl(API_BASE + "/gemini/askPrompt/" + savedPrompt.id, true);
+
             return geminiResponse.jsonResponse;
         } else {
             console.log("Saved prompt has no ID:", savedPrompt);
@@ -255,6 +263,21 @@ async function deleteProject(proj){
     } catch(err){
         alert("could not deleted the following project: " + projectDeleted + "\n due to this error: " + err)
     }
+}
+
+async function deletePromptFromDb(singlePrompt){
+    const promptDeleted = `\n prompt id: ${singlePrompt.id} \n project id; ${singlePrompt.projectId} \n prompt: ${singlePrompt.prompt}`
+    const deleteApiUrl = API_BASE + "/gemini/" + singlePrompt.id;
+    try{
+        const response = await postObjectAsJson(deleteApiUrl, singlePrompt, "DELETE", true);
+        if(response.ok){
+            alert("The following prompt was deleted" + promptDeleted)
+        }
+    } catch(err){
+        console.log("error: " + err);
+    }
+
+
 }
 
 const navItems = document.querySelectorAll(".nav-item");

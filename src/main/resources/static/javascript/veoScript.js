@@ -14,7 +14,9 @@ export function initVideoGeneration() {
 // Generate video from prompt
 async function generateVideo(prompt) {
     const url = `${API_BASE_URL}/generate`;
-    const payload = { prompt: prompt };
+    const payload = {
+        prompt: prompt
+    };
 
     const response = await postObjectAsJson(url, payload, "POST", true);
 

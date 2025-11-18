@@ -226,60 +226,7 @@ body {
     box-shadow: 0 10px 30px rgba(102,126,234,0.5);
 }
 
-.project-item {
-    cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.project-item:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(102,126,234,0.4);
-    background: rgba(255,255,255,0.05);
-}
-
-.project-view {
-    background: rgba(255,255,255,0.03);
-    padding: 30px;
-    border-radius: 20px;
-    border: 1px solid rgba(255,255,255,0.1);
-    animation: fadeIn 0.3s ease-in-out;
-}
-
-.back-btn {
-    background: none;
-    border: none;
-    color: #667eea;
-    font-size: 18px;
-    cursor: pointer;
-    margin-bottom: 20px;
-    transition: color 0.2s ease;
-}
-
-.back-btn:hover {
-    color: #9b7eea;
-}
-
-.ai-section {
-    margin-top: 30px;
-}
-
-.response-box {
-    margin-top: 15px;
-    padding: 15px;
-    background: rgba(255,255,255,0.05);
-    border-radius: 12px;
-    min-height: 60px;
-    white-space: pre-wrap;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-/* =======================
-   Project Cards on Dashboard
-   ======================= */
+/* Project Items (Cards on Dashboard) */
 .project-item {
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255,255,255,0.1);
@@ -305,9 +252,7 @@ body {
     font-size: 14px;
 }
 
-/* =======================
-   Project Details / Opened Project
-   ======================= */
+/* Project Details / Opened Project View */
 .project-view {
     display: flex;
     flex-direction: column;
@@ -320,33 +265,43 @@ body {
 }
 
 .project-view h2 {
-    font-size: 28px;
-    margin-bottom: 10px;
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 15px;
+    color: #ffffff;
 }
 
 .project-view p {
     font-size: 16px;
-    color: rgba(255,255,255,0.8);
+    line-height: 1.5;
+    color: rgba(255,255,255,0.85);
+    margin-bottom: 20px;
 }
 
-/* Back button */
-.back-btn {
+/* Back Button */
+.back-btn,
+.project-view .back-btn {
     align-self: flex-start;
     background: none;
-    border: none;
+    border: 2px solid #667eea;
     color: #667eea;
-    font-size: 18px;
+    padding: 8px 18px;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 20px;
     cursor: pointer;
-    transition: color 0.2s ease;
+    transition: all 0.3s ease;
+    margin-bottom: 20px;
 }
 
-.back-btn:hover {
-    color: #9b7eea;
+.back-btn:hover,
+.project-view .back-btn:hover {
+    background: #667eea;
+    color: white;
+    transform: translateY(-2px);
 }
 
-/* =======================
-   Prompt Input & Button
-   ======================= */
+/* Prompt Input & Button Section */
 .prompt-section {
     display: flex;
     flex-direction: column;
@@ -373,26 +328,27 @@ body {
     background: rgba(255,255,255,0.08);
 }
 
-.prompt-section button {
+.prompt-section button,
+.project-view .prompt-section button {
     width: fit-content;
-    padding: 10px 25px;
+    padding: 12px 28px;
     border: none;
     border-radius: 25px;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
-    font-size: 14px;
+    font-size: 16px;
+    font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
 }
 
-.prompt-section button:hover {
+.prompt-section button:hover,
+.project-view .prompt-section button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(102,126,234,0.4);
+    box-shadow: 0 10px 25px rgba(102,126,234,0.5);
 }
 
-/* =======================
-   Previous Prompts / Responses
-   ======================= */
+/* Previous Prompts / Responses History */
 .prompt-history {
     margin-top: 30px;
     display: flex;
@@ -431,9 +387,7 @@ body {
     resize: vertical;
 }
 
-/* =======================
-   Gemini Response Box
-   ======================= */
+/* Gemini Response Box */
 .response-box {
     margin-top: 10px;
     padding: 12px;
@@ -445,66 +399,7 @@ body {
     border: 1px solid rgba(255,255,255,0.1);
 }
 
-/* =======================
-   Open Project View Styling
-   ======================= */
-.project-view h2 {
-    font-size: 32px;
-    font-weight: 700;
-    margin-bottom: 15px;
-    color: #ffffff;
-}
-
-.project-view p {
-    font-size: 16px;
-    line-height: 1.5;
-    color: rgba(255,255,255,0.85);
-    margin-bottom: 20px;
-}
-
-/* Prompt submit button inside project view */
-.project-view .prompt-section button {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    font-weight: 600;
-    padding: 12px 28px;
-    font-size: 16px;
-    border-radius: 25px;
-    border: none;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.project-view .prompt-section button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 25px rgba(102,126,234,0.5);
-}
-
-/* Back button */
-.project-view .back-btn {
-    align-self: flex-start;
-    background: none;
-    border: 2px solid #667eea;
-    color: #667eea;
-    padding: 8px 18px;
-    font-size: 16px;
-    font-weight: 600;
-    border-radius: 20px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    margin-bottom: 20px;
-}
-
-.project-view .back-btn:hover {
-    background: #667eea;
-    color: white;
-    transform: translateY(-2px);
-}
-
-/* =======================
-   Veo Video Generation Modal
-   ======================= */
-
+/* Veo Video Generation Modal */
 .veo-modal-overlay {
     position: fixed;
     top: 0;
@@ -531,17 +426,6 @@ body {
     overflow-y: auto;
     animation: slideUp 0.3s ease;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-}
-
-@keyframes slideUp {
-    from {
-        transform: translateY(50px);
-        opacity: 0;
-    }
-    to {
-        transform: translateY(0);
-        opacity: 1;
-    }
 }
 
 .veo-modal-header {
@@ -574,12 +458,27 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 0;
+    position: relative;
+}
+
+.veo-modal-close::before {
+    content: '✕';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: 300;
     line-height: 1;
 }
 
 .veo-modal-close:hover {
     background: rgba(255, 255, 255, 0.25);
-    transform: rotate(90deg);
+    transform: scale(1.1);
+}
+
+.veo-modal-close:hover::before {
+    transform: translate(-50%, -50%) rotate(90deg);
 }
 
 .veo-modal-body {
@@ -713,11 +612,6 @@ body {
     vertical-align: middle;
 }
 
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
 .veo-modal .video-info {
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -767,26 +661,6 @@ body {
     border-radius: 10px;
 }
 
-/* Generate Video Button (on prompt items) */
-.generate-video-btn {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    border: none;
-    padding: 12px 25px;
-    border-radius: 25px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    margin-top: 10px;
-    display: inline-block;
-}
-
-.generate-video-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.5);
-}
-
 /* Scrollbar Styling for Modal */
 .veo-modal::-webkit-scrollbar {
     width: 8px;
@@ -806,11 +680,10 @@ body {
     background: rgba(102, 126, 234, 0.7);
 }
 
-/* Delete Button Styling */
+/* Action Buttons - Unified Sizing */
+.generate-video-btn,
+.watch-video-btn,
 .delete-btn {
-    background: rgba(244, 67, 54, 0.2);
-    border: 1px solid rgba(244, 67, 54, 0.3);
-    color: #f44336;
     padding: 8px 16px;
     border-radius: 20px;
     font-size: 13px;
@@ -818,6 +691,38 @@ body {
     cursor: pointer;
     transition: all 0.3s ease;
     margin-top: 10px;
+    display: inline-block;
+    border: none;
+}
+
+.generate-video-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.generate-video-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.5);
+}
+
+.watch-video-btn {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+}
+
+.watch-video-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(16, 185, 129, 0.5);
+}
+
+.watch-video-btn:active {
+    transform: translateY(0);
+}
+
+.delete-btn {
+    background: rgba(244, 67, 54, 0.2);
+    border: 1px solid rgba(244, 67, 54, 0.3);
+    color: #f44336;
 }
 
 .delete-btn:hover {
@@ -826,9 +731,29 @@ body {
     transform: translateY(-2px);
 }
 
-/* =======================
-   Responsive
-   ======================= */
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Responsive */
 @media (max-width: 768px) {
     .main-container {
         margin: 100px 20px 20px;
@@ -867,62 +792,4 @@ body {
     .veo-modal button {
         width: 100%;
     }
-}
-.veo-modal-close {
-    background: rgba(255, 255, 255, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: white;
-    font-size: 28px;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-    position: relative;
-}
-
-.veo-modal-close::before {
-    content: '✕';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-weight: 300;
-    line-height: 1;
-}
-
-.veo-modal-close:hover {
-    background: rgba(255, 255, 255, 0.25);
-    transform: scale(1.1);
-}
-
-.veo-modal-close:hover::before {
-    transform: translate(-50%, -50%) rotate(90deg);
-}
-/* Watch Video Button */
-.watch-video-btn {
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-    color: white;
-    border: none;
-    padding: 12px 25px;
-    border-radius: 25px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    margin-top: 10px;
-    display: inline-block;
-}
-
-.watch-video-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(16, 185, 129, 0.5);
-}
-
-.watch-video-btn:active {
-    transform: translateY(0);
 }

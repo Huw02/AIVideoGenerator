@@ -45,15 +45,12 @@ public class GeminiMessageController {
     public ResponseEntity<GeminiMessage> sendPromtToGeminiFromBackend(@PathVariable int geminiId){
 
         GeminiMessage geminiMessage = geminiMessageService.getGeminiMessageByGeminiId(geminiId);
-        System.out.println("Henter gemini msg fra db: " + geminiMessage.toString());
 
         String geminiResponse = geminiMessageService.explainAI(geminiMessage.getPrompt());
-        System.out.println("gemini response: " + geminiResponse);
 
         geminiMessage.setJsonResponse(geminiResponse);
 
         geminiMessageService.addGeminiMessage(geminiMessage);
-        System.out.println("opdateret gemini msg : " + geminiMessage);
 
 
         return new ResponseEntity<>(geminiMessageService.addGeminiMessage(geminiMessage), HttpStatus.OK);
@@ -86,6 +83,19 @@ public class GeminiMessageController {
     @GetMapping("/gemini/{projectId}")
     public ResponseEntity<List<GeminiMessage>>getGeminiPromptsByProjectId(@PathVariable int projectId){
         return new ResponseEntity<>(geminiMessageService.findByProjectId(projectId), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/gemini/{geminiId}")
+    public ResponseEntity<String>deleteGeminiMessage(@PathVariable int geminiId){
+        GeminiMessage geminiMessage = geminiMessageService.getGeminiMessageByGeminiId(geminiId);
+        if(geminiMessage != null){
+            geminiMessageService.deleteGeminiMessage(geminiId);
+            return ResponseEntity.ok("Gemini message was deleted");
+        }else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Could not find gemini message by that id");
+        }
+
+
     }
 
 
